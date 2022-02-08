@@ -13,7 +13,7 @@
         <script>
             //just put any URLs you want in here.
             const urls=[
-                "google.com",
+                "https://www.google.com",
                 "https://someBadurl.idunno"
             ];
             //these are the icons it uses from https://fontawesome.com/v4.7/icons/
@@ -23,6 +23,7 @@
 
 
             function Start(){
+                console.log("Creating cards");
                 const statusPanel = document.getElementById("StatusCards");
                 
 
@@ -69,10 +70,22 @@
                 //we return the card and icon reference so we can change them later.
                 return {card,icon};
             }
+
+            function Recheck(){
+                console.log("Clearing cards");
+                const statusPanel = document.getElementById("StatusCards");
+                while (statusPanel.firstChild) {
+                    statusPanel.removeChild(statusPanel.firstChild);
+                }
+                Start();
+            }
         </script>
     </head>
     <body onload="Start();">
         <div class="w3-container">
+            <div class="w3-panel">
+                <button class="w3-button w3-block w3-ripple w3-round w3-blue" onclick="Recheck()">Check Again</button>
+            </div>
             <div class="w3-panel" id="StatusCards">
             </div>
         </div>
