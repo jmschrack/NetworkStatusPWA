@@ -1,14 +1,80 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <!-- <link rel="manifest" href="netstatus.webmanifest"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="manifest" href="netstatus.webmanifest">
         <link rel="stylesheet" href="w3.css"> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script>
             if('serviceWorker' in navigator) {
-                //navigator.serviceWorker.register('sw.js');
+                navigator.serviceWorker.register('sw.js');
             };
+        </script>
+        <script>
+            //just put any URLs you want in here.
+            const urls=[
+                "google.com",
+                "https://someBadurl.idunno"
+            ];
+            //these are the icons it uses from https://fontawesome.com/v4.7/icons/
+            const checkingIcon="fa-refresh";
+            const goodIcon="fa-thumbs-up";
+            const badIcon="fa-times";
 
+
+            function Start(){
+                const statusPanel = document.getElementById("StatusCards");
+                
+
+                urls.forEach(link=>{
+                    //create a card for the URL and put it in the status panel
+                    const {card,icon}=CreateCard(link);
+                    statusPanel.appendChild(card);
+
+                    //make a fetch request to the URL, if it's valid we set the card green, if it's invalid we set the card red
+                    fetch(link,{mode:'no-cors'}).then(resp=>{
+                        //GOT A RESPONSE
+
+                        //set the card green
+                        card.classList.add("w3-green");
+                        //swap the spinning icon for a thumbs up
+                        icon.classList.replace(checkingIcon,goodIcon);
+                        icon.classList.remove("w3-spin");
+                    }).catch(error=>{
+                        //GOT AN ERROR
+
+                        card.classList.add("w3-red");
+                        icon.classList.replace(checkingIcon,badIcon);
+                        icon.classList.remove("w3-spin");
+                    })
+                });
+
+            }
+
+            function CreateCard(url){
+                //creates  <div class="w3-card w3-container w3-cell w3-mobile"></div>
+                const card = document.createElement("div");
+                card.classList.add("w3-card","w3-container","w3-cell","w3-mobile");
+                //creates <p>url</p>
+                const p = document.createElement("p");
+                p.appendChild(document.createTextNode(url));
+                //creates <p><i class="fa w3-spin fa-refresh"></i></p>
+                const iconP=document.createElement("p");
+                const icon = document.createElement("i");
+                icon.classList.add("fa",checkingIcon,"w3-spin");
+                iconP.appendChild(icon);
+                //puts it all together
+                card.appendChild(p);
+                card.appendChild(iconP);
+                //we return the card and icon reference so we can change them later.
+                return {card,icon};
+            }
         </script>
     </head>
-    <body></body>
+    <body onload="Start();">
+        <div class="w3-container">
+            <div class="w3-panel" id="StatusCards">
+            </div>
+        </div>
+    </body>
 </html>

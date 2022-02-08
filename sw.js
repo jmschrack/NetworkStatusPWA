@@ -19,9 +19,9 @@ const RUNTIME = 'runtime';
 
 // A list of local resources we always want to be cached.
 const PRECACHE_URLS = [
-  'index.html',
-  './', // Alias for index.html
-  'w3.css',
+  '/NetworkStatusPWA/index.html',
+  '/NetworkStatusPWA/', // Alias for index.html
+  '/NetworkStatusPWA/w3.css',
 ];
 
 // The install handler takes care of precaching the resources we always need.
@@ -52,10 +52,11 @@ self.addEventListener('activate', event => {
 // from the network before returning it to the page.
 self.addEventListener('fetch', event => {
   // Skip cross-origin requests, like those for Google Analytics.
-  if (event.request.url.startsWith(self.location.origin)) {
+  if (event.request.url.startsWith(self.location.origin)||event.request.url.startsWith("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/")) {
     event.respondWith(
       caches.match(event.request).then(cachedResponse => {
         if (cachedResponse) {
+            console.log("Got cached Response for:"+event.request.url);
           return cachedResponse;
         }
 
